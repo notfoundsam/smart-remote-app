@@ -70,7 +70,7 @@ export default {
       // Framework7 parameters here
       f7params: {
         id: 'io.framework7.testapp', // App bundle ID
-        name: 'Framework7', // App name
+        name: 'Smart Remote', // App name
         theme: 'auto', // Automatic theme detection
         // App routes
         routes: routes,
