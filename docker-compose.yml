@@ -1,0 +1,13 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - "WEB_DOCUMENT_ROOT=/app"
+      - "WEB_DOCUMENT_INDEX=index.php"
+    volumes:
+      - ./www:/app
+    ports:
+      - "5001:80"
