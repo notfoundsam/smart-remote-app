@@ -5,13 +5,8 @@
     <!-- Statusbar -->
     <f7-statusbar></f7-statusbar>
 
-    <!-- Left Panel -->
-    <f7-panel left reveal theme-dark>
-      <f7-view url="/panel-left/"></f7-view>
-    </f7-panel>
-
     <!-- Right Panel -->
-    <f7-panel right cover theme-dark>
+    <f7-panel right cover>
       <f7-view url="/panel-right/"></f7-view>
     </f7-panel>
 
@@ -38,20 +33,29 @@
         <f7-page login-screen>
           <f7-login-screen-title>Login</f7-login-screen-title>
           <f7-list form>
-            <f7-list-item>
-              <f7-label>Username</f7-label>
-              <f7-input name="username" placeholder="Username" type="text"></f7-input>
-            </f7-list-item>
-            <f7-list-item>
-              <f7-label>Password</f7-label>
-              <f7-input name="password" type="password" placeholder="Password"></f7-input>
-            </f7-list-item>
+            <f7-list-input
+              :value="username"
+              @input="username = $event.target.value"
+              label="Username"
+              type="text"
+              placeholder="Username"
+              required
+              validate
+              error-message="The name is required"
+            ></f7-list-input>
+            <f7-list-input
+              :value="password"
+              @input="password = $event.target.value"
+              label="Password"
+              type="password"
+              placeholder="Password"
+              required
+              validate
+              error-message="The password is required"
+            ></f7-list-input>
           </f7-list>
           <f7-list>
-            <f7-list-button title="Sign In" login-screen-close></f7-list-button>
-            <f7-block-footer>
-              <p>Click Sign In to close Login Screen</p>
-            </f7-block-footer>
+            <f7-list-button @click="signIn" title="Sign In"></f7-list-button>
           </f7-list>
         </f7-page>
       </f7-view>
@@ -61,20 +65,99 @@
 </template>
 
 <script>
+
 // Import Routes
-import routes from './routes.js'
+import routes from './routes.js';
+import { ajaxURL } from './config.js';
 
 export default {
   data() {
     return {
+      username: '',
+      password: '',
       // Framework7 parameters here
       f7params: {
-        id: 'io.framework7.testapp', // App bundle ID
-        name: 'Smart Remote', // App name
+        id: 'io.framework7.smartremote', // App bundle ID
+        name: 'Framework7', // App name
         theme: 'auto', // Automatic theme detection
         // App routes
         routes: routes,
       },
+    }
+  },
+  mounted() {
+    this.axios.get(`${ajaxURL}/api/v1/rcs`)
+    .then((response) => {
+      this.$store.commit('setRcs', response.data.rcs);
+      this.getUserName();
+    })
+    .catch((error) => {
+      if (error.response && error.response.status == 401) {
+        console.log(401);
+        this.$f7.loginScreen.open('#login-screen', true);
+      } else {
+        console.log(error);
+      }
+    });
+  },
+  methods: {
+    signIn: function() {
+      if (this.username && this.password) {
+        this.axios.post(`${ajaxURL}/api/v1/login`, {
+          username: this.username,
+          password: this.password
+        })
+        .then((response) => {
+          if (response.data.result) {
+            this.axios.get(`${ajaxURL}/api/v1/rcs`)
+            .then((response) => {
+              this.$store.commit('setRcs', response.data.rcs);
+              this.$store.commit('setUserName', this.username);
+              this.getNodes();
+              this.getRadios();
+              this.$f7.loginScreen.close('#login-screen', true);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.response.status == 403) {
+            this.$f7.dialog.alert('Fail', 'You are fired');
+          } else {
+            console.log(error);
+          }
+        });
+      }
+    },
+    getUserName: function() {
+      this.axios.get(`${ajaxURL}/api/v1/user`)
+      .then((response) => {
+        console.log(response.data.username);
+        this.$store.commit('setUserName', response.data.username);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    getNodes: function() {
+      this.axios.get(`${ajaxURL}/api/v1/nodes`)
+      .then((response) => {
+        this.$store.commit('setNodes', response.data.nodes);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    getRadios: function() {
+      this.axios.get(`${ajaxURL}/api/v1/radios`)
+      .then((response) => {
+        this.$store.commit('setRadios', response.data.radios);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   }
 }
