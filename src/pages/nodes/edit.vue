@@ -1,8 +1,8 @@
 <template>
   <f7-page>
-    <f7-navbar title="Edit the node" back-link="Back"></f7-navbar>
+    <f7-navbar title="Edit the node" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
     <f7-list no-hairlines-md>
-      <f7-list-input
+      <!-- <f7-list-input
         :value="name"
         @input="name = $event.target.value"
         label="Node name"
@@ -12,7 +12,7 @@
         validate
         error-message="The name is required"
         clear-button
-      ></f7-list-input>
+      ></f7-list-input> -->
       <f7-list-input
         :value="hostName"
         @input="hostName = $event.target.value"
@@ -54,7 +54,7 @@
 </template>
 <script>
 
-import { ajaxURL } from '../config.js';
+import { ajaxURL } from '../../config.js';
 
 export default {
   data() {
@@ -67,9 +67,9 @@ export default {
   mounted() {
     if (this.$f7route.params.node_id) {
       this.axios.get(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}`)
-      .then((responce) => {
-        let node = responce.data.node;
-        this.name = node.name;
+      .then((response) => {
+        let node = response.data.node;
+        // this.name = node.name;
         this.hostName = node.host_name;
         this.order = node.order;
       })
@@ -80,17 +80,17 @@ export default {
   },
   methods: {
     save: function() {
-      if (this.name && this.hostName && this.order) {
+      if (this.hostName && this.order) {
         this.axios.put(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}`, {
-          name: this.name,
+          // name: this.name,
           host_name: this.hostName,
           order: this.order
         })
-        .then((responce) => {
-          if (responce.data.node) {
+        .then((response) => {
+          if (response.data.node) {
             this.$f7router.back();
           } else {
-            console.log(responce.data);
+            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -100,12 +100,12 @@ export default {
     },
     remove: function() {
       this.axios.delete(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}`)
-      .then((responce) => {
-        console.log(responce);
-        if (responce.data.result) {
+      .then((response) => {
+        console.log(response);
+        if (response.data.result) {
           this.$f7router.back();
         } else {
-          console.log(responce.data);
+          console.log(response.data);
         }
       })
       .catch((error) => {

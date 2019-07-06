@@ -1,15 +1,22 @@
 import HomePage from './pages/home.vue';
-import RcPage from './pages/rc.vue';
-import RcAddPage from './pages/rc-add.vue';
+import NodePage from './pages/nodes/index.vue';
+import RcPage from './pages/rcs/index.vue';
+import RcAddPage from './pages/rcs/add.vue';
+import RcEditPage from './pages/rcs/edit.vue';
+import RcRemovePage from './pages/rcs/remove.vue';
 
-import NodeEditPage from './pages/node-edit.vue';
-import RadioAddPage from './pages/radio-add.vue';
-import ArduinoAddPage from './pages/arduino-add.vue';
+import NodeEditPage from './pages/nodes/edit.vue';
 
-import BtnAddPage from './pages/btn-add.vue';
-import BtnEditPage from './pages/btn-edit.vue';
-import BtnRemovePage from './pages/btn-remove.vue';
-import BtnAddRadioIrPage from './pages/btn-add-radio-ir.vue';
+import RadioAddPage from './pages/radios/add.vue';
+import RadioEditPage from './pages/radios/edit.vue';
+import RadioRemovePage from './pages/radios/remove.vue';
+
+import ArduinoAddPage from './pages/arduinos/add.vue';
+
+import BtnAddPage from './pages/buttons/add.vue';
+import BtnEditPage from './pages/buttons/edit.vue';
+import BtnRemovePage from './pages/buttons/remove.vue';
+import BtnAddRadioPage from './pages/buttons/add-radio.vue';
 
 import PanelRightPage from './pages/panel-right.vue';
 import NotFoundPage from './pages/not-found.vue';
@@ -20,21 +27,77 @@ export default [
     component: HomePage,
   },
   {
+    path: '/node/',
+    component: NodePage,
+  },
+  {
     path: '/node/:node_id/edit/',
     component: NodeEditPage,
   },
-  {
-    path: '/rc/:rc_id/',
-    component: RcPage,
-  },
+
+  /* RC path */
   {
     path: '/rc/add/',
     component: RcAddPage,
   },
   {
+    path: '/rc/remove/',
+    component: RcRemovePage,
+  },
+  {
+    path: '/rc/:rc_id/edit/',
+    component: RcAddPage,
+  },
+  {
+    path: '/rc/edit/',
+    component: RcEditPage,
+  },
+  {
+    path: '/rc/:rc_id/',
+    component: RcPage,
+  },
+
+  /* Button path */
+  {
+    path: '/rc/:rc_id/btn/add/',
+    component: BtnAddPage,
+  },
+  {
+    path: '/rc/:rc_id/btn/edit/',
+    component: BtnEditPage,
+  },
+  {
+    path: '/rc/:rc_id/btn/remove/',
+    component: BtnRemovePage,
+  },
+  {
+    path: '/rc/:rc_id/btn/radio/',
+    component: BtnAddRadioPage,
+  },
+  {
+    path: '/rc/:rc_id/btn/mqtt/',
+    component: BtnAddRadioPage,
+  },
+  {
+    path: '/rc/:rc_id/btn/radio/:btn_id/',
+    component: BtnAddRadioPage,
+  },
+
+  /* Radio path */
+  {
     path: '/radio/add/',
     component: RadioAddPage,
   },
+  {
+    path: '/radio/remove/',
+    component: RadioRemovePage,
+  },
+  {
+    path: '/radio/:radio_id/edit/',
+    component: RadioAddPage,
+  },
+
+  /* Arduino path */
   {
     path: '/arduino/:node_id/add/',
     component: ArduinoAddPage,
@@ -42,34 +105,6 @@ export default [
   {
     path: '/arduino/:node_id/edit/:arduino_id/',
     component: ArduinoAddPage,
-  },
-  {
-    path: '/btn/:rc_id/add/',
-    component: BtnAddPage,
-  },
-  {
-    path: '/btn/:rc_id/edit/',
-    component: BtnEditPage,
-  },
-  {
-    path: '/btn/:rc_id/remove/',
-    component: BtnRemovePage,
-  },
-  {
-    path: '/btn/:rc_id/add/ir/',
-    component: BtnAddRadioIrPage,
-  },
-  {
-    path: '/btn/:rc_id/add/cmd/',
-    component: BtnAddRadioIrPage,
-  },
-  {
-    path: '/btn/:rc_id/add/mqtt/',
-    component: BtnAddRadioIrPage,
-  },
-  {
-    path: '/btn/:rc_id/edit/:btn_id/ir/',
-    component: BtnAddRadioIrPage,
   },
   {
     path: '/panel-right/',

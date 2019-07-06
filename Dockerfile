@@ -1,3 +1,3 @@
-FROM webdevops/apache:centos-7
+FROM httpd:alpine
 
-WORKDIR /app
+WORKDIR /usr/local/apache2/htdocs/

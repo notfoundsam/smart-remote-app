@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new arduino" back-link="Back"></f7-navbar>
+    <f7-navbar title="Add a new arduino" back-link="Back" back-link-url="/node/" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :value="name"
@@ -34,32 +34,7 @@
         validate
         error-message="The usb port is required"
         clear-button
-      ></f7-list-input>
-      <f7-list-item
-        radio
-        title="Both"
-        name="mode"
-        value=""
-        :checked="mode === 'rtx'"
-        @change="mode = $event.target.value"
-      ></f7-list-item>
-      <f7-list-item
-        radio
-        title="Transmitter"
-        name="mode"
-        value="tx"
-        :checked="mode === 'tx'"
-        @change="mode = $event.target.value"
-      ></f7-list-item>
-      <f7-list-item
-        radio
-        title="Receiver"
-        name="mode"
-        value="rx"
-        :checked="mode === 'rx'"
-        @change="mode = $event.target.value"
-      ></f7-list-item>
-      
+      ></f7-list-input>      
     </f7-list>
 
     <f7-block>
@@ -79,7 +54,7 @@
 </template>
 <script>
 
-import { ajaxURL } from '../config.js';
+import { ajaxURL } from '../../config.js';
 
 export default {
   data() {
@@ -87,18 +62,17 @@ export default {
       name: '',
       order: '',
       usb: '',
-      mode: 'rtx',
     }
   },
   mounted() {
     if (this.$f7route.params.arduino_id) {
-      this.axios.get(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}/arduinos/${this.$f7route.params.arduino_id}`)
-      .then((responce) => {
-        let arduino = responce.data.arduino;
+      this.axios.get(`${ajaxURL}/api/v1/arduinos/${this.$f7route.params.arduino_id}`)
+      .then((response) => {
+        let arduino = response.data.arduino;
         this.name = arduino.name;
         this.order = arduino.order;
         this.usb = arduino.usb;
-        this.mode = arduino.mode;
+        // this.mode = arduino.mode;
       })
       .catch((error) => {
         console.log(error);
@@ -107,33 +81,33 @@ export default {
   },
   methods: {
     save: function() {
-      if (this.name && this.order && this.usb && this.mode) {
+      if (this.name && this.order && this.usb && this.$f7route.params.node_id) {
         let data = {
           name: this.name,
           order: this.order,
           usb: this.usb,
-          mode: this.mode
+          node_id: this.$f7route.params.node_id
         };
 
         if (this.$f7route.params.arduino_id) {
-          this.axios.put(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}/arduinos/${this.$f7route.params.arduino_id}`, data)
-          .then((responce) => {
-            if (responce.data.arduino) {
+          this.axios.put(`${ajaxURL}/api/v1/arduinos/${this.$f7route.params.arduino_id}`, data)
+          .then((response) => {
+            if (response.data.arduino) {
               this.$f7router.back();
             } else {
-              console.log(responce.data);
+              console.log(response.data);
             }
           })
           .catch((error) => {
             console.log(error);
           });
         } else {
-          this.axios.post(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}/arduinos`, data)
-          .then((responce) => {
-            if (responce.data.arduino) {
+          this.axios.post(`${ajaxURL}/api/v1/arduinos`, data)
+          .then((response) => {
+            if (response.data.arduino) {
               this.$f7router.back();
             } else {
-              console.log(responce.data);
+              console.log(response.data);
             }
           })
           .catch((error) => {
@@ -143,13 +117,13 @@ export default {
       }
     },
     remove: function() {
-      this.axios.delete(`${ajaxURL}/api/v1/nodes/${this.$f7route.params.node_id}/arduinos/${this.$f7route.params.arduino_id}`)
-      .then((responce) => {
-        console.log(responce);
-        if (responce.data.result) {
+      this.axios.delete(`${ajaxURL}/api/v1/arduinos/${this.$f7route.params.arduino_id}`)
+      .then((response) => {
+        console.log(response);
+        if (response.data.result) {
           this.$f7router.back();
         } else {
-          console.log(responce.data);
+          console.log(response.data);
         }
       })
       .catch((error) => {

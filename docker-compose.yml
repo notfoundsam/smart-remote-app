@@ -4,10 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - "WEB_DOCUMENT_ROOT=/app"
-      - "WEB_DOCUMENT_INDEX=index.php"
     volumes:
-      - ./www:/app
+      - ./www:/usr/local/apache2/htdocs/
     ports:
       - "5001:80"

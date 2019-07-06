@@ -6,7 +6,7 @@
     <f7-statusbar></f7-statusbar>
 
     <!-- Right Panel -->
-    <f7-panel right cover theme-dark>
+    <f7-panel right cover>
       <f7-view url="/panel-right/"></f7-view>
     </f7-panel>
 
@@ -33,14 +33,26 @@
         <f7-page login-screen>
           <f7-login-screen-title>Login</f7-login-screen-title>
           <f7-list form>
-            <f7-list-item>
-              <f7-label>Username</f7-label>
-              <f7-input name="username" @input="username = $event.target.value" :value="username" placeholder="Username" type="text"></f7-input>
-            </f7-list-item>
-            <f7-list-item>
-              <f7-label>Password</f7-label>
-              <f7-input name="password" @input="password = $event.target.value" :value="password" type="password" placeholder="Password"></f7-input>
-            </f7-list-item>
+            <f7-list-input
+              :value="username"
+              @input="username = $event.target.value"
+              label="Username"
+              type="text"
+              placeholder="Username"
+              required
+              validate
+              error-message="The name is required"
+            ></f7-list-input>
+            <f7-list-input
+              :value="password"
+              @input="password = $event.target.value"
+              label="Password"
+              type="password"
+              placeholder="Password"
+              required
+              validate
+              error-message="The password is required"
+            ></f7-list-input>
           </f7-list>
           <f7-list>
             <f7-list-button @click="signIn" title="Sign In"></f7-list-button>
@@ -75,8 +87,8 @@ export default {
   },
   mounted() {
     this.axios.get(`${ajaxURL}/api/v1/rcs`)
-    .then((responce) => {
-      this.$store.commit('setRcs', responce.data.rcs);
+    .then((response) => {
+      this.$store.commit('setRcs', response.data.rcs);
       this.getUserName();
     })
     .catch((error) => {
@@ -95,12 +107,14 @@ export default {
           username: this.username,
           password: this.password
         })
-        .then((responce) => {
-          if (responce.data.result) {
+        .then((response) => {
+          if (response.data.result) {
             this.axios.get(`${ajaxURL}/api/v1/rcs`)
-            .then((responce) => {
-              this.$store.commit('setRcs', responce.data.rcs);
+            .then((response) => {
+              this.$store.commit('setRcs', response.data.rcs);
               this.$store.commit('setUserName', this.username);
+              this.getNodes();
+              this.getRadios();
               this.$f7.loginScreen.close('#login-screen', true);
             })
             .catch((error) => {
@@ -119,8 +133,27 @@ export default {
     },
     getUserName: function() {
       this.axios.get(`${ajaxURL}/api/v1/user`)
-      .then((responce) => {
-        this.$store.commit('setUserName', responce.data.username);
+      .then((response) => {
+        console.log(response.data.username);
+        this.$store.commit('setUserName', response.data.username);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    getNodes: function() {
+      this.axios.get(`${ajaxURL}/api/v1/nodes`)
+      .then((response) => {
+        this.$store.commit('setNodes', response.data.nodes);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    getRadios: function() {
+      this.axios.get(`${ajaxURL}/api/v1/radios`)
+      .then((response) => {
+        this.$store.commit('setRadios', response.data.radios);
       })
       .catch((error) => {
         console.log(error);

@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Edit buttons" back-link="Back"></f7-navbar>
+    <f7-navbar title="Edit buttons" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
     
     <f7-list no-hairlines-md>
       <f7-list-item
@@ -25,7 +25,7 @@
 </template>
 <script>
 
-import { ajaxURL } from '../config.js';
+import { ajaxURL } from '../../config.js';
 
 export default {
   data() {
@@ -36,12 +36,12 @@ export default {
   },
   mounted() {
     this.axios.get(`${ajaxURL}/api/v1/rcs/${this.$f7route.params.rc_id}/buttons`)
-    .then((responce) => {
+    .then((response) => {
       let btn_arr = [];
       let btn_row = [];
       let index = null;
 
-      this.buttons = responce.data.buttons;
+      this.buttons = response.data.buttons;
     })
     .catch((error) => {
       if (error.status == 401) {
@@ -55,8 +55,8 @@ export default {
     edit: function() {
       if (this.button_id) {
         let type = this.buttons.find(x => x.id === parseInt(this.button_id)).type;
-        if (type == 'ir') {
-          this.$f7router.navigate(`/btn/${this.$f7route.params.rc_id}/edit/${this.button_id}/ir/`);
+        if (type == 'radio') {
+          this.$f7router.navigate(`/rc/${this.$f7route.params.rc_id}/btn/radio/${this.button_id}/`);
         }
       }
     }

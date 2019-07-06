@@ -2,11 +2,14 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const path = require('path');
+const childProcess = require('child_process');
+
+const buildVersion = childProcess.execSync('git rev-parse HEAD').toString();
 
 function resolvePath(dir) {
   return path.join(__dirname, '..', dir);
@@ -19,7 +22,7 @@ module.exports = {
   ],
   output: {
     path: resolvePath('www'),
-    filename: 'app.js',
+    filename: `app.js?v=${buildVersion}`,
     publicPath: ''
   },
   resolve: {
@@ -111,9 +114,9 @@ module.exports = {
     }),
     new UglifyJsPlugin({
       uglifyOptions: {
-        compress: {
-          warnings: false
-        }
+        // compress: {
+        // }
+        warnings: false
       },
       sourceMap: true,
       parallel: true
@@ -140,7 +143,7 @@ module.exports = {
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'app.css'
+      filename: `app.css?v=${buildVersion}`
     }),
     new CopyWebpackPlugin([{
       from: resolvePath('static'),

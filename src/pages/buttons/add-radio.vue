@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new button" back-link="Back"></f7-navbar>
+    <f7-navbar title="Add a new button" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :value="name"
@@ -35,7 +35,7 @@
         error-message="The order is required"
         clear-button
       ></f7-list-input>
-      <f7-list-item title="Choose a color" smart-select>
+      <f7-list-item title="Choose a color" smart-select :smart-select-params="{navbarColorTheme: 'blue',navbarBgColor: 'blue', closeOnSelect: true}>
         <select v-model="selectedColor">
           <option value="blue">Blue</option>
           <option value="green">Green</option>
@@ -45,28 +45,29 @@
           <option value="pink">Pink</option>
         </select>
       </f7-list-item>
-      <f7-list-item title="Choose a radio" smart-select>
+      <f7-list-item title="Choose the radio" smart-select>
         <select v-model="selectedRadio">
           <option v-for="radio in radios" :value="radio.id">{{ radio.name }}</option>
         </select>
       </f7-list-item>
-      <f7-list-item title="Choose a node" smart-select>
-        <select v-model="selectedNode">
-          <option v-for="node in nodes" :value="node.id">{{ node.name }}</option>
-        </select>
-      </f7-list-item>
-      <f7-list-item title="Choose an arduino" smart-select v-if="selectedNode">
-        <select v-model="selectedArduino">
-          <option v-for="arduino in arduinos" :value="arduino.id">{{ arduino.name }}</option>
-        </select>
-      </f7-list-item>
+      <f7-list-input
+        :value="message"
+        @input="message = $event.target.value"
+        label="Message"
+        type="textarea"
+        placeholder="Enter a message"
+        required
+        validate
+        error-message="The message is required"
+        clear-button
+      ></f7-list-input>
     </f7-list>
 
     <f7-block-title>Catch an IR signal</f7-block-title>
     <f7-list no-hairlines-md>
       <f7-list-item title="Choose a node" smart-select>
         <select v-model="selectedCatchNode">
-          <option v-for="node in nodes" :value="node.id">{{ node.name }}</option>
+          <option v-for="node in nodes" :value="node.id">{{ node.host_name }}</option>
         </select>
       </f7-list-item>
     </f7-list>
@@ -77,11 +78,6 @@
         </f7-col>
       </f7-row>
     </f7-block>
-    <f7-card
-      v-if="execute"
-      title="Recieved signal"
-      :content="execute"
-    ></f7-card>
 
     <f7-block>
       <f7-row tag="p">
@@ -102,7 +98,7 @@
 </template>
 <script>
 
-import { ajaxURL } from '../config.js';
+import { ajaxURL } from '../../config.js';
 
 export default {
   data() {
@@ -110,13 +106,11 @@ export default {
       name: '',
       orderHor: '',
       orderVer: '',
-      execute: '',
+      message: '',
       
       selectedColor: 'blue',
       selectedRadio: '',
-      selectedNode: '',
       selectedCatchNode: '',
-      selectedArduino: '',
 
       nodes: this.$store.getters.getNodes,
       arduinos: [],
@@ -131,9 +125,9 @@ export default {
         console.log(this.selectedNode);
         
         this.axios.get(`${ajaxURL}/api/v1/nodes/${this.selectedNode}/arduinos`)
-        .then((responce) => {
-          this.arduinos = responce.data.arduinos;
-          console.log(responce.data.arduinos);
+        .then((response) => {
+          this.arduinos = response.data.arduinos;
+          console.log(response.data.arduinos);
         })
         .catch((error) => {
           console.log(error);
@@ -145,21 +139,19 @@ export default {
   },
   mounted() {
     this.axios.get(`${ajaxURL}/api/v1/radios`)
-    .then((responce) => {
-      this.radios = responce.data.radios;
+    .then((response) => {
+      this.radios = response.data.radios;
 
       if (this.$f7route.params.btn_id) {
-        this.axios.get(`${ajaxURL}/api/v1/rcs/${this.$f7route.params.rc_id}/buttons/${this.$f7route.params.btn_id}`)
-        .then((responce) => {
-          let button = responce.data.button;
+        this.axios.get(`${ajaxURL}/api/v1/buttons/${this.$f7route.params.btn_id}`)
+        .then((response) => {
+          let button = response.data.button;
           this.name = button.name;
           this.orderHor = button.order_hor;
           this.orderVer = button.order_ver;
-          this.execute = button.execute;
+          this.message = button.message;
           this.selectedColor = button.color;
           this.selectedRadio = button.radio_id;
-          this.selectedNode = button.node_id;
-          this.selectedArduino = button.arduino_id;
         })
         .catch((error) => {
           console.log(error);
@@ -180,7 +172,7 @@ export default {
         clearTimeout(this.dialogTimeout);
         this.$f7.dialog.close();
         if (data.result == 'success') {
-          this.execute = data.ir_signal
+          this.message = data.ir_signal
           console.log(data);
         } else if (data.result == 'error') {
           this.$f7.dialog.close();
@@ -191,39 +183,38 @@ export default {
   },
   methods: {
     save: function() {
-      if (this.name && this.orderHor && this.orderVer && this.selectedColor && this.selectedRadio && this.selectedNode && this.selectedArduino && this.execute) {
+      if (this.name && this.orderHor && this.orderVer && this.selectedColor && this.selectedRadio && this.message) {
         let data = {
+          rc_id: this.$f7route.params.rc_id,
           name: this.name,
           order_hor: this.orderHor,
           order_ver: this.orderVer,
           color: this.selectedColor,
-          execute: this.execute,
+          message: this.message,
           radio_id: this.selectedRadio,
-          node_id: this.selectedNode,
-          arduino_id: this.selectedArduino,
-          type: 'ir',
+          type: 'radio',
         };
 
         if (this.$f7route.params.btn_id) {
-          this.axios.put(`${ajaxURL}/api/v1/rcs/${this.$f7route.params.rc_id}/buttons/${this.$f7route.params.btn_id}`, data)
-          .then((responce) => {
-            if (responce.data.button) {
+          this.axios.put(`${ajaxURL}/api/v1/buttons/${this.$f7route.params.btn_id}`, data)
+          .then((response) => {
+            if (response.data.button) {
               this.$f7router.back(`/rc/${this.$f7route.params.rc_id}/`, {force: true});
               console.log(this.$f7router.history);
             } else {
-              console.log(responce.data);
+              console.log(response.data);
             }
           })
           .catch((error) => {
             console.log(error.response);
           });
         } else {
-          this.axios.post(`${ajaxURL}/api/v1/rcs/${this.$f7route.params.rc_id}/buttons`, data)
-          .then((responce) => {
-            if (responce.data.button) {
+          this.axios.post(`${ajaxURL}/api/v1/buttons`, data)
+          .then((response) => {
+            if (response.data.button) {
               this.$f7router.back(`/rc/${this.$f7route.params.rc_id}/`, {force: true});
             } else {
-              console.log(responce.data);
+              console.log(response.data);
             }
           })
           .catch((error) => {
@@ -243,23 +234,23 @@ export default {
         }, 15000);
 
         this.$socket.emit('catch_ir', JSON.stringify({'node_id': this.selectedCatchNode}))
-        this.execute = '1500 800 800 1600';
+        // this.message = '1500 800 800 1600';
       }
     },
     test: function() {
-      if (this.selectedRadio && this.selectedNode && this.selectedArduino && this.execute) {
+      if (this.selectedRadio && this.selectedNode && this.selectedArduino && this.message) {
         this.axios.post(`${ajaxURL}/api/v1/rcs/${this.$f7route.params.rc_id}/buttons`, {
-          execute: this.execute,
+          message: this.message,
           radio_id: this.selectedRadio,
           node_id: this.selectedNode,
           arduino_id: this.selectedArduino,
           type: 'ir',
         })
-        .then((responce) => {
-          if (responce.data.button) {
+        .then((response) => {
+          if (response.data.button) {
             this.$f7router.back();
           } else {
-            console.log(responce.data);
+            console.log(response.data);
           }
         })
         .catch((error) => {

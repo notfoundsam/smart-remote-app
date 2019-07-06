@@ -7,32 +7,33 @@ const store = new Vuex.Store({
   state: {
     nodes: [],
     rcs: [],
-    UserName: 'root'
+    radios: [],
+    userName: ''
   },
   mutations: {
     setNodes(state, nodes) {
       state.nodes = nodes;
     },
     setRcs(state, rcs) {
+      console.log('recieved msg')
       state.rcs = rcs;
     },
-    setUserName(state, UserName) {
-      state.UserName = UserName;
+    setRadios(state, radios) {
+      state.radios = radios;
+    },
+    setUserName(state, userName) {
+      state.userName = userName;
     },
   },
   actions: {
-    // async addTodo({ commit }, todo) {
-    //   console.log('Action: Trying to add todo');
-    //   if (!todo || !todo.title) {
-    //     console.error('Invalid todo item');
-    //     return;
-    //   }
-    //   const result = true;
-    //   if (result === true) commit('addTodo', todo);
-    //   else console.error('Could not add todo');
-    // },
-    "<SOCKET><test>"() {
-        console.log('fff');
+    "SOCKET_updateNodes"(context, data) {
+      context.commit('setNodes', data.nodes);
+    },
+    "SOCKET_updateRcs"(context, data) {
+      context.commit('setRcs', data.rcs);
+    },
+    "SOCKET_updateRadios"(context, data) {
+      context.commit('setRadios', data.radios);
     }
   },
   getters: {
@@ -41,6 +42,9 @@ const store = new Vuex.Store({
     },
     getRcs: state => {
       return state.rcs;
+    },
+    getRadios: state => {
+      return state.radios;
     },
     getUserName: state => {
       return state.userName;
