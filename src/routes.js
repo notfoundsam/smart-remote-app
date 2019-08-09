@@ -8,8 +8,10 @@ import RcRemovePage from './pages/rcs/remove.vue';
 import NodeEditPage from './pages/nodes/edit.vue';
 
 import RadioAddPage from './pages/radios/add.vue';
-import RadioEditPage from './pages/radios/edit.vue';
 import RadioRemovePage from './pages/radios/remove.vue';
+
+import MqttAddPage from './pages/mqtts/add.vue';
+import MqttRemovePage from './pages/mqtts/remove.vue';
 
 import ArduinoAddPage from './pages/arduinos/add.vue';
 
@@ -17,6 +19,7 @@ import BtnAddPage from './pages/buttons/add.vue';
 import BtnEditPage from './pages/buttons/edit.vue';
 import BtnRemovePage from './pages/buttons/remove.vue';
 import BtnAddRadioPage from './pages/buttons/add-radio.vue';
+import BtnAddMqttPage from './pages/buttons/add-mqtt.vue';
 
 import PanelRightPage from './pages/panel-right.vue';
 import NotFoundPage from './pages/not-found.vue';
@@ -76,11 +79,15 @@ export default [
   },
   {
     path: '/rc/:rc_id/btn/mqtt/',
-    component: BtnAddRadioPage,
+    component: BtnAddMqttPage,
   },
   {
     path: '/rc/:rc_id/btn/radio/:btn_id/',
     component: BtnAddRadioPage,
+  },
+  {
+    path: '/rc/:rc_id/btn/mqtt/:btn_id/',
+    component: BtnAddMqttPage,
   },
 
   /* Radio path */
@@ -95,6 +102,20 @@ export default [
   {
     path: '/radio/:radio_id/edit/',
     component: RadioAddPage,
+  },
+
+  /* Mqtt path */
+  {
+    path: '/mqtt/add/',
+    component: MqttAddPage,
+  },
+  {
+    path: '/mqtt/remove/',
+    component: MqttRemovePage,
+  },
+  {
+    path: '/mqtt/:mqtt_id/edit/',
+    component: MqttAddPage,
   },
 
   /* Arduino path */

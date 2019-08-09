@@ -1,11 +1,11 @@
 <template>
   <f7-page>
-    <f7-navbar :title="name" back-link="Back" back-link-url="/" bg-color="blue" text-color="white" color-theme="white">
+    <f7-navbar :title="name" back-link="Back" back-link-url="/">
       <f7-nav-right>
         <f7-link panel-open="right"><font-awesome-icon icon="bars" size="1x" /></f7-link>
       </f7-nav-right>
     </f7-navbar>
-    <f7-toolbar position="bottom" bg-color="blue" text-color="white" color-theme="white">
+    <f7-toolbar position="bottom">
       <f7-link></f7-link>
       <f7-link @click="$refs.actionsButtonGroup.open()"><font-awesome-icon icon="sliders-h" size="2x" /></f7-link>
     </f7-toolbar>

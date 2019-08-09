@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Edit buttons" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Edit buttons" back-link="Back"></f7-navbar>
     
     <f7-list no-hairlines-md>
       <f7-list-item
@@ -57,6 +57,10 @@ export default {
         let type = this.buttons.find(x => x.id === parseInt(this.button_id)).type;
         if (type == 'radio') {
           this.$f7router.navigate(`/rc/${this.$f7route.params.rc_id}/btn/radio/${this.button_id}/`);
+        } else if (type == 'mqtt') {
+          this.$f7router.navigate(`/rc/${this.$f7route.params.rc_id}/btn/mqtt/${this.button_id}/`);
+        } else {
+          console.log('button type not found');
         }
       }
     }

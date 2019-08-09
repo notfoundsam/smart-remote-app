@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new arduino" back-link="Back" back-link-url="/node/" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Add a new arduino" back-link="Back" back-link-url="/node/"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :value="name"

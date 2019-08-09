@@ -3,9 +3,9 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import store from './store';
-// import VueSocketIO from 'vue-socket.io'
-import VueSocketIO from 'vue-socket.io-extended';
-import io from 'socket.io-client';
+import VueSocketIO from 'vue-socket.io'
+// import VueSocketIO from 'vue-socket.io-extended';
+// import io from 'socket.io-client';
 
 // Import config
 import { ajaxURL } from './config.js';
@@ -25,7 +25,7 @@ import IconsStyles from './css/icons.css';
 import AppStyles from './css/app.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCog, faCogs, faPlus, faBars, faSlidersH } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCogs, faPlus, faBars, faSlidersH, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUsb, faRaspberryPi } from '@fortawesome/free-brands-svg-icons';
 
@@ -39,28 +39,34 @@ library.add(
   faBars,
   faSlidersH,
   faUsb,
-  faRaspberryPi
+  faRaspberryPi,
+  faCircle
 )
+
+// const socketInstance = io(ajaxURL, {
+//   transports: ['polling', 'websocket'],
+// });
 
 // Init F7 Vue Plugin
 Framework7.use(Framework7Vue);
+// Vue.use(VueAxios, axios, store);
 Vue.use(VueAxios, axios);
 
-// Vue.use(new VueSocketIO({
-//   debug: true,
-//   connection: ajaxURL,
-//   vuex: {
-//     store,
-//     actionPrefix: 'SOCKET_',
-//     mutationPrefix: 'SOCKET_'
-//   }
-// }));
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: ajaxURL,
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  }
+}));
 
-Vue.use(VueSocketIO, io(ajaxURL), {
-  store,
-  actionPrefix: 'SOCKET_',
-  mutationPrefix: 'SOCKET_'
-});
+// Vue.use(VueSocketIO, io(ajaxURL), {
+//   store,
+//   actionPrefix: 'SOCKET_',
+//   mutationPrefix: 'SOCKET_'
+// });
 
 // Send credentails automatically with AJAX
 axios.defaults.withCredentials = true;

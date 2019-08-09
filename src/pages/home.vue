@@ -1,12 +1,12 @@
 <template>
   <f7-page>
-    <f7-navbar bg-color="blue" text-color="white" color-theme="white">
+    <f7-navbar>
       <f7-nav-title>Smart remote</f7-nav-title>
       <f7-nav-right>
         <f7-link panel-open="right"><font-awesome-icon icon="bars" size="1x" /></f7-link>
       </f7-nav-right>
     </f7-navbar>
-    <f7-toolbar position="bottom" bg-color="blue" text-color="white" color-theme="white">
+    <f7-toolbar position="bottom">
       <f7-link @click="$refs.actionsRadioGroup.open()"><font-awesome-icon icon="cogs" size="2x" /></f7-link>
       <f7-link href="/node/"><font-awesome-icon :icon="['fab', 'raspberry-pi']" size="2x" /></f7-icon></f7-link>
       <f7-link @click="$refs.actionsRcGroup.open()"><font-awesome-icon icon="plus" size="2x" /></f7-link>
@@ -24,6 +24,7 @@
     <f7-actions ref="actionsRadioGroup">
       <f7-actions-group>
         <f7-actions-button bold @click="$f7router.navigate('/radio/add/')">Add radio</f7-actions-button>
+        <f7-actions-button bold @click="$f7router.navigate('/mqtt/add/')">Add mqtt</f7-actions-button>
         <f7-actions-button bold @click="$f7router.navigate('/radio/remove/')">Remove radio</f7-actions-button>
         <f7-actions-button color="red">Cancel</f7-actions-button>
       </f7-actions-group>
@@ -58,16 +59,15 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.getters.getUserName) {
-      console.log('home mounted');
-      this.axios.get(`${ajaxURL}/api/v1/radios`)
-      .then((response) => {
-        this.$store.commit('setRadios', response.data.radios);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
+    // if (this.$store.getters.getUserName) {
+      // this.axios.get(`${ajaxURL}/api/v1/radios`)
+      // .then((response) => {
+      //   this.$store.commit('setRadios', response.data.radios);
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
+    // }
   },
   sockets: {},
   methods: {}

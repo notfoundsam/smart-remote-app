@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new button" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Add a new button" back-link="Back"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :value="name"
@@ -35,7 +35,10 @@
         error-message="The order is required"
         clear-button
       ></f7-list-input>
-      <f7-list-item title="Choose a color" smart-select :smart-select-params="{navbarColorTheme: 'blue',navbarBgColor: 'blue', closeOnSelect: true}>
+      <f7-list-item :title="colorTitle" smart-select :smart-select-params="{closeOnSelect: true, valueEl: '<div></div>'}">
+        <select v-model="selectedColor">
+          <option v-for="color in colors" :value="color.code">{{ color.name }}</option>
+        </select>
         <select v-model="selectedColor">
           <option value="blue">Blue</option>
           <option value="green">Green</option>
@@ -45,7 +48,7 @@
           <option value="pink">Pink</option>
         </select>
       </f7-list-item>
-      <f7-list-item title="Choose the radio" smart-select>
+      <f7-list-item :title="radioTitle" smart-select :smart-select-params="{closeOnSelect: true, valueEl: '<div></div>'}">
         <select v-model="selectedRadio">
           <option v-for="radio in radios" :value="radio.id">{{ radio.name }}</option>
         </select>
@@ -65,7 +68,7 @@
 
     <f7-block-title>Catch an IR signal</f7-block-title>
     <f7-list no-hairlines-md>
-      <f7-list-item title="Choose a node" smart-select>
+      <f7-list-item title="Choose a node" smart-select :smart-select-params="{closeOnSelect: true}">
         <select v-model="selectedCatchNode">
           <option v-for="node in nodes" :value="node.id">{{ node.host_name }}</option>
         </select>
@@ -108,63 +111,66 @@ export default {
       orderVer: '',
       message: '',
       
+      colors: [
+        {code: 'blue', name: 'Blue'},
+        {code: 'green', name: 'Green'},
+        {code: 'red', name: 'Red'},
+        {code: 'orange', name: 'Orange'},
+        {code: 'yellow', name: 'Yellow'},
+        {code: 'pink', name: 'Pink'},
+      ],
+      
       selectedColor: 'blue',
       selectedRadio: '',
       selectedCatchNode: '',
 
-      nodes: this.$store.getters.getNodes,
-      arduinos: [],
-      radios: [],
-
       dialogTimeout: null,
     }
   },
-  watch: {
-    selectedNode: function() {
-      if (this.selectedNode) {
-        console.log(this.selectedNode);
-        
-        this.axios.get(`${ajaxURL}/api/v1/nodes/${this.selectedNode}/arduinos`)
-        .then((response) => {
-          this.arduinos = response.data.arduinos;
-          console.log(response.data.arduinos);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      } else {
-        console.log('empty');
+  computed: {
+    radioTitle() {
+      if (this.selectedRadio != '') {
+        let index = this.radios.map(x => {
+          return x.id;
+        }).indexOf(this.selectedRadio);
+        return `Radio: ${this.radios[index].name}`;
       }
+
+      return 'Choose a radio';
+    },
+    nodes() {
+      return this.$store.getters.getNodes;
+    },
+    radios() {
+      return this.$store.getters.getRadios;
+    },
+    colorTitle() {
+      if (this.selectedColor != '') {
+        let index = this.colors.map(x => {
+          return x.code;
+        }).indexOf(this.selectedColor);
+        return `Color: ${this.colors[index].name}`;
+      }
+
+      return 'Choose a color';
     }
   },
   mounted() {
-    this.axios.get(`${ajaxURL}/api/v1/radios`)
-    .then((response) => {
-      this.radios = response.data.radios;
-
-      if (this.$f7route.params.btn_id) {
-        this.axios.get(`${ajaxURL}/api/v1/buttons/${this.$f7route.params.btn_id}`)
-        .then((response) => {
-          let button = response.data.button;
-          this.name = button.name;
-          this.orderHor = button.order_hor;
-          this.orderVer = button.order_ver;
-          this.message = button.message;
-          this.selectedColor = button.color;
-          this.selectedRadio = button.radio_id;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
-    })
-    .catch((error) => {
-      if (error.response && error.response.status == 401) {
-        this.$f7.loginScreen.open('#login-screen', true);
-      } else {
+    if (this.$f7route.params.btn_id) {
+      this.axios.get(`${ajaxURL}/api/v1/buttons/${this.$f7route.params.btn_id}`)
+      .then((response) => {
+        let button = response.data.button;
+        this.name = button.name;
+        this.orderHor = button.order_hor;
+        this.orderVer = button.order_ver;
+        this.message = button.message;
+        this.selectedColor = button.color;
+        this.selectedRadio = button.radio_id;
+      })
+      .catch((error) => {
         console.log(error);
-      }
-    });
+      });
+    }
   },
   sockets: {
     recievedIr(data) {
@@ -176,7 +182,7 @@ export default {
           console.log(data);
         } else if (data.result == 'error') {
           this.$f7.dialog.close();
-          this.$f7.dialog.alert(data.errors, 'Error');
+          this.$f7.dialog.alert(data.error, 'Error');
         }
       }
     }
@@ -193,6 +199,7 @@ export default {
           message: this.message,
           radio_id: this.selectedRadio,
           type: 'radio',
+          mqtt_topic: '',
         };
 
         if (this.$f7route.params.btn_id) {
@@ -233,8 +240,7 @@ export default {
           that.$f7.dialog.alert('The signal did not recieve', 'Timeout error');
         }, 15000);
 
-        this.$socket.emit('catch_ir', JSON.stringify({'node_id': this.selectedCatchNode}))
-        // this.message = '1500 800 800 1600';
+        this.$socket.emit('catch_ir', JSON.stringify({'node_id': this.selectedCatchNode, 'int_limit': true}));
       }
     },
     test: function() {

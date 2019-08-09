@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Edit remote" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Edit remote" back-link="Back"></f7-navbar>
     
     <f7-list no-hairlines-md>
       <f7-list-item
@@ -30,18 +30,15 @@ import { ajaxURL } from '../../config.js';
 export default {
   data() {
     return {
-      rcs: [],
       rc_id: '',
     }
   },
   mounted() {
-    this.axios.get(`${ajaxURL}/api/v1/rcs`)
-    .then((response) => {
-      this.rcs = response.data.rcs;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  },
+  computed: {
+    rcs() {
+      return this.$store.getters.getRcs;
+    }
   },
   methods: {
     edit: function() {

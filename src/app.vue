@@ -11,7 +11,7 @@
     </f7-panel>
 
     <!-- Main View -->
-    <f7-view id="main-view" url="/" main></f7-view>
+    <f7-view main></f7-view>
 
     <!-- Popup -->
     <f7-popup id="popup">
@@ -77,8 +77,8 @@ export default {
       password: '',
       // Framework7 parameters here
       f7params: {
-        id: 'io.framework7.smartremote', // App bundle ID
-        name: 'Framework7', // App name
+        id: 'com.zazi.smartremote', // App bundle ID
+        name: 'Smart Remote', // App name
         theme: 'auto', // Automatic theme detection
         // App routes
         routes: routes,
@@ -90,6 +90,9 @@ export default {
     .then((response) => {
       this.$store.commit('setRcs', response.data.rcs);
       this.getUserName();
+      this.getNodes();
+      this.getRadios();
+      this.getArduinos();
     })
     .catch((error) => {
       if (error.response && error.response.status == 401) {
@@ -99,6 +102,21 @@ export default {
         console.log(error);
       }
     });
+  },
+  sockets: {
+    notification(data) {
+      // console.log('notification');
+      let notificationFull = this.$f7.notification.create({
+        icon: '<i class="icon demo-icon">7</i>',
+        title: 'Framework7',
+        titleRightText: 'now',
+        subtitle: 'This is a subtitle',
+        text: 'This is a simple notification message',
+        closeTimeout: 3000,
+      });
+      notificationFull.open();
+      // console.log(data);
+    }
   },
   methods: {
     signIn: function() {
@@ -115,6 +133,7 @@ export default {
               this.$store.commit('setUserName', this.username);
               this.getNodes();
               this.getRadios();
+              this.getArduinos();
               this.$f7.loginScreen.close('#login-screen', true);
             })
             .catch((error) => {
@@ -154,6 +173,15 @@ export default {
       this.axios.get(`${ajaxURL}/api/v1/radios`)
       .then((response) => {
         this.$store.commit('setRadios', response.data.radios);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    getArduinos: function() {
+      this.axios.get(`${ajaxURL}/api/v1/arduinos`)
+      .then((response) => {
+        this.$store.commit('setArduinos', response.data.arduinos);
       })
       .catch((error) => {
         console.log(error);

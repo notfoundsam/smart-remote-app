@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Rpi nodes" back-link="Back" back-link-url="/" :back-link-force="true" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Rpi nodes" back-link="Back" back-link-url="/" :back-link-force="true"></f7-navbar>
     <f7-row no-gap>
       <rpi-node
         v-for="node in nodes"

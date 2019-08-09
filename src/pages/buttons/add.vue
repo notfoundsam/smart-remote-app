@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new button" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Add a new button" back-link="Back"></f7-navbar>
     
     <f7-block>
       <f7-row tag="p">

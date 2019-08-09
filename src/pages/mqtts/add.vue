@@ -1,19 +1,18 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new radio" back-link="Back"></f7-navbar>
+    <f7-navbar title="Add a new mqtt" back-link="Back"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :value="name"
         @input="name = $event.target.value"
-        label="Radio name"
+        label="Mqtt name"
         type="text"
-        placeholder="Enter the name"
+        placeholder="Enter a name"
         required
         validate
         error-message="The name is required"
         clear-button
       ></f7-list-input>
-      
       <f7-list-input
         :value="order"
         @input="order = $event.target.value"
@@ -25,62 +24,17 @@
         error-message="The order is required"
         clear-button
       ></f7-list-input>
-    </f7-list>
-    <f7-block-title>Type settings</f7-block-title>
-    <f7-list>
-      <f7-list-item
-        radio
-        title="Broadcast"
-        name="type"
-        value="broadcast"
-        :checked="type === 'broadcast'"
-        @change="type = $event.target.value"
-      ></f7-list-item>
-      <f7-list-item
-        radio
-        title="Unicast"
-        name="type"
-        value="unicast"
-        :checked="type === 'unicast'"
-        @change="type = $event.target.value"
-      ></f7-list-item>
       <f7-list-input
-        :value="pipe"
-        @input="pipe = $event.target.value"
-        label="Pipe of the radio"
+        :value="topic"
+        @input="topic = $event.target.value"
+        label="Topic"
         type="text"
-        :placeholder="pipePlaceholder"
+        placeholder="Enter a listening topic"
         required
         validate
-        error-message="The pipe is required"
+        error-message="The topic is required"
         clear-button
       ></f7-list-input>
-      <f7-list-item
-        checkbox
-        title="On request"
-        :value="onRequest"
-        :checked="onRequest === 1"
-        @change="checkOnRequest"
-      ></f7-list-item>
-      <f7-list-input
-        v-if="onRequest"
-        :value="expiredAfter"
-        @input="expiredAfter = $event.target.value"
-        label="Alive time"
-        type="text"
-        placeholder="In seconds"
-        required
-        validate
-        error-message="Alive time is required"
-        clear-button
-      ></f7-list-input>
-    </f7-list>
-    <f7-list>
-      <f7-list-item :title="arduinoTitle" smart-select :smart-select-params="{closeOnSelect: true, valueEl: '<div></div>'}">
-        <select v-model="selectedArduino">
-          <option v-for="arduino in arduinos" :value="arduino.id">{{ arduino.name }}</option>
-        </select>
-      </f7-list-item>
       <f7-list-item
         checkbox
         title="Enable"

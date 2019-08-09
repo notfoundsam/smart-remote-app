@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar :title="userName" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar :title="userName"></f7-navbar>
     <f7-block-title v-if="rcs.length == 0">Create your first rc</f7-block-title>
     <!-- <f7-block-title v-else>Your remote controls</f7-block-title> -->
     <f7-list>

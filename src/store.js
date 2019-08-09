@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     nodes: [],
     rcs: [],
     radios: [],
+    arduinos: [],
     userName: ''
   },
   mutations: {
@@ -15,11 +16,13 @@ const store = new Vuex.Store({
       state.nodes = nodes;
     },
     setRcs(state, rcs) {
-      console.log('recieved msg')
       state.rcs = rcs;
     },
     setRadios(state, radios) {
       state.radios = radios;
+    },
+    setArduinos(state, arduinos) {
+      state.arduinos = arduinos;
     },
     setUserName(state, userName) {
       state.userName = userName;
@@ -45,6 +48,9 @@ const store = new Vuex.Store({
     },
     getRadios: state => {
       return state.radios;
+    },
+    getArduinos: state => {
+      return state.arduinos;
     },
     getUserName: state => {
       return state.userName;

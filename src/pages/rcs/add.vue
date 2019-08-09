@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new RC" back-link="Back" bg-color="blue" text-color="white" color-theme="white"></f7-navbar>
+    <f7-navbar title="Add a new RC" back-link="Back"></f7-navbar>
     <f7-block-title>RC settings</f7-block-title>
     <f7-list no-hairlines-md>
       <f7-list-input
@@ -27,10 +27,9 @@
       ></f7-list-input> 
     </f7-list>
     <f7-list>
-      <f7-list-item title="Choose an icon" smart-select>
-        <select name="icon" v-model="icon">
-          <option value="light" selected>Light</option>
-          <option value="tv">TV</option>
+      <f7-list-item :title="iconTitle" smart-select :smart-select-params="{closeOnSelect: true, valueEl: '<div></div>'}">
+        <select v-model="selectedIcon">
+          <option v-for="icon in icons" :value="icon.code">{{ icon.name }}</option>
         </select>
       </f7-list-item>
     </f7-list>
@@ -52,8 +51,25 @@ export default {
   data() {
     return {
       name: '',
-      icon: 'light',
+      selectedIcon: 'light',
       order: '',
+
+      icons: [
+        {code: 'light', name: 'Light'},
+        {code: 'tv', name: 'Tv'},
+      ],
+    }
+  },
+  computed: {
+    iconTitle() {
+      if (this.selectedIcon != '') {
+        let index = this.icons.map(x => {
+          return x.code;
+        }).indexOf(this.selectedIcon);
+        return `Icon: ${this.icons[index].name}`;
+      }
+
+      return 'Choose an icon';
     }
   },
   mounted() {
@@ -62,7 +78,7 @@ export default {
       .then((response) => {
         let rc = response.data.rc;
         this.name = rc.name;
-        this.icon = rc.icon;
+        this.selectedIcon = rc.icon;
         this.order = rc.order;
       })
       .catch((error) => {
@@ -72,10 +88,10 @@ export default {
   },
   methods: {
     save: function() {
-      if (this.name && this.order && this.icon) {
+      if (this.name && this.order && this.selectedIcon) {
         let data = {
           name: this.name,
-          icon: this.icon,
+          icon: this.selectedIcon,
           order: this.order,
           public: true
         };
