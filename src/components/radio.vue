@@ -12,7 +12,6 @@
       </f7-card-content>
       <f7-card-footer class="no-border">
         <f7-link :href="`/radio/${radio.id}/edit/`"><font-awesome-icon icon="cog" /> Edit</f7-link>
-        <span v-if="online"></span>
       </f7-card-footer>
     </f7-card>
   </f7-col>
@@ -35,7 +34,7 @@ export default {
   data() {
     return {
       params: [],
-      last_update: new Date(),
+      last_update: null,
       interval: null,
       online: false
     }
@@ -43,15 +42,17 @@ export default {
   computed: {
     isOnline: function() {
       return {
-        'color-green': !this.online,
-        'color-red': this.online
+        'color-green': this.online,
+        'color-red': !this.online
       }
     },
   },
   props: ['radio'],
   mounted() {
-    this.params = this.radio.params.params;
-    this.last_update = new Date(this.radio.params.last_update);
+    if (this.radio.params) {
+      this.params = this.radio.params.params;
+      this.last_update = new Date(this.radio.params.last_update);
+    }
     
     // Start an online checker
     this.interval = setInterval(() => this.checkOnline(), 1000);
@@ -66,9 +67,11 @@ export default {
   },
   methods: {
     checkOnline() {
+      if (this.last_update == null) return;
+
       let now = new Date();
       let diff = (now - this.last_update) / 1000;
-      this.online = Math.floor(diff) > radioOfflineTimeout
+      this.online = Math.floor(diff) < radioOfflineTimeout
     }
   }
 }
