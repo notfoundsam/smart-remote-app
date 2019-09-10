@@ -25,7 +25,7 @@ import IconsStyles from './css/icons.css';
 import AppStyles from './css/app.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCog, faCogs, faPlus, faBars, faSlidersH, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCogs, faPlus, faBars, faSlidersH, faCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUsb, faRaspberryPi } from '@fortawesome/free-brands-svg-icons';
 
@@ -40,7 +40,8 @@ library.add(
   faSlidersH,
   faUsb,
   faRaspberryPi,
-  faCircle
+  faCircle,
+  faTrashAlt
 )
 
 // const socketInstance = io(ajaxURL, {

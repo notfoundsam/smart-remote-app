@@ -1,6 +1,6 @@
 <template>
   <f7-page>
-    <f7-navbar title="Add a new radio" back-link="Back"></f7-navbar>
+    <f7-navbar :title="pageTitle" back-link="Back"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :value="name"
@@ -107,6 +107,7 @@ import { ajaxURL } from '../../config.js';
 export default {
   data() {
     return {
+      pageTitle: '',
       name: '',
       pipe: '',
       order: '',
@@ -150,6 +151,7 @@ export default {
       console.log(error);
     });
     if (this.$f7route.params.radio_id) {
+      this.pageTitle = 'Edit the radio';
       this.axios.get(`${ajaxURL}/api/v1/radios/${this.$f7route.params.radio_id}`)
       .then((response) => {
         let radio = response.data.radio;
@@ -159,11 +161,13 @@ export default {
         this.order = radio.order;
         this.onRequest = radio.on_request ? 1 : 0;
         this.expiredAfter = radio.expired_after == 0 ? '' : radio.expired_after;
-        this.enabled = radio.enabled;
+        this.enabled = radio.enabled ? 1 : 0;
       })
       .catch((error) => {
         console.log(error);
       });
+    } else {
+      this.pageTitle = 'Add a new radio';
     }
   },
   methods: {
@@ -192,7 +196,7 @@ export default {
           this.axios.put(`${ajaxURL}/api/v1/radios/${this.$f7route.params.radio_id}`, data)
           .then((response) => {
             if (response.data.radio) {
-              this.$f7router.back(`/`, {force: true});
+              this.$f7router.back('/', {force: true});
             } else {
               console.log(response.data);
             }

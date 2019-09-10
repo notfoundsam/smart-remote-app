@@ -12,6 +12,7 @@
       <f7-link @click="$refs.actionsRcGroup.open()"><font-awesome-icon icon="plus" size="2x" /></f7-link>
     </f7-toolbar>
     
+    <f7-block-title>Radios</f7-block-title>
     <f7-row no-gap>
       <radio
         v-for="radio in radios"
@@ -20,12 +21,20 @@
       ></radio>
     </f7-row>
 
+    <f7-block-title>Mqtts</f7-block-title>
+    <f7-row no-gap>
+      <mqtt
+        v-for="mqtt in mqtts"
+        :key="mqtt.id"
+        :mqtt="mqtt"
+      ></mqtt>
+    </f7-row>
+
     <!-- RC Group -->
     <f7-actions ref="actionsRadioGroup">
       <f7-actions-group>
         <f7-actions-button bold @click="$f7router.navigate('/radio/add/')">Add radio</f7-actions-button>
         <f7-actions-button bold @click="$f7router.navigate('/mqtt/add/')">Add mqtt</f7-actions-button>
-        <f7-actions-button bold @click="$f7router.navigate('/radio/remove/')">Remove radio</f7-actions-button>
         <f7-actions-button color="red">Cancel</f7-actions-button>
       </f7-actions-group>
     </f7-actions>
@@ -45,17 +54,22 @@
 
 import { ajaxURL } from '../config.js';
 import Radio from '../components/radio.vue';
+import Mqtt from '../components/mqtt.vue';
 
 export default {
   data() {
     return {}
   },
   components: {
-    Radio
+    Radio,
+    Mqtt
   },
   computed: {
     radios() {
       return this.$store.getters.getRadios;
+    },
+    mqtts() {
+      return this.$store.getters.getMqtts;
     }
   },
   mounted() {

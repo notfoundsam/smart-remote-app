@@ -92,6 +92,7 @@ export default {
       this.getUserName();
       this.getNodes();
       this.getRadios();
+      this.getMqtts();
       this.getArduinos();
     })
     .catch((error) => {
@@ -133,6 +134,7 @@ export default {
               this.$store.commit('setUserName', this.username);
               this.getNodes();
               this.getRadios();
+              this.getMqtts();
               this.getArduinos();
               this.$f7.loginScreen.close('#login-screen', true);
             })
@@ -173,6 +175,15 @@ export default {
       this.axios.get(`${ajaxURL}/api/v1/radios`)
       .then((response) => {
         this.$store.commit('setRadios', response.data.radios);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    getMqtts: function() {
+      this.axios.get(`${ajaxURL}/api/v1/mqtts`)
+      .then((response) => {
+        this.$store.commit('setMqtts', response.data.mqtts);
       })
       .catch((error) => {
         console.log(error);

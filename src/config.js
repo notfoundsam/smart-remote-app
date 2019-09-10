@@ -3,5 +3,6 @@
 const ajaxURL = 'http://192.168.100.111:5000';
 
 const radioOfflineTimeout = 30;
+const mqttOfflineTimeout = 30;
 
-export { ajaxURL, radioOfflineTimeout };
+export { ajaxURL, radioOfflineTimeout, mqttOfflineTimeout };

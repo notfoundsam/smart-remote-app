@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     nodes: [],
     rcs: [],
     radios: [],
+    mqtts: [],
     arduinos: [],
     userName: ''
   },
@@ -20,6 +21,9 @@ const store = new Vuex.Store({
     },
     setRadios(state, radios) {
       state.radios = radios;
+    },
+    setMqtts(state, mqtts) {
+      state.mqtts = mqtts;
     },
     setArduinos(state, arduinos) {
       state.arduinos = arduinos;
@@ -37,6 +41,9 @@ const store = new Vuex.Store({
     },
     "SOCKET_updateRadios"(context, data) {
       context.commit('setRadios', data.radios);
+    },
+    "SOCKET_updateMqtts"(context, data) {
+      context.commit('setMqtts', data.mqtts);
     }
   },
   getters: {
@@ -48,6 +55,9 @@ const store = new Vuex.Store({
     },
     getRadios: state => {
       return state.radios;
+    },
+    getMqtts: state => {
+      return state.mqtts;
     },
     getArduinos: state => {
       return state.arduinos;

@@ -2,7 +2,7 @@
   <f7-col width="100" tablet-width="50" desktop-width="25">
     <f7-card>
       <f7-card-header class="no-border">
-        <div><font-awesome-icon icon="circle" v-bind:class="isOnline" /> {{ radio.name }}</div>
+        <div><font-awesome-icon icon="circle" v-bind:class="isOnline" /> {{ mqtt.name }}</div>
       </f7-card-header>
       <f7-card-content :padding="true">
         <p v-if="params.tempValue">Temperature: {{ params.tempValue }}</p>
@@ -11,8 +11,8 @@
         <p v-if="params.batValue">Battery: {{ params.batValue }}</p>
       </f7-card-content>
       <f7-card-footer class="no-border">
-        <f7-link :href="`/radio/${radio.id}/edit/`"><font-awesome-icon icon="cog" /> Edit</f7-link>
-        <f7-link @click="remove(radio.id)"><font-awesome-icon icon="trash-alt" /> Remove</f7-link>
+        <f7-link :href="`/mqtt/${mqtt.id}/edit/`"><font-awesome-icon icon="cog" /> Edit</f7-link>
+        <f7-link @click="remove(mqtt.id)"><font-awesome-icon icon="trash-alt" /> Remove</f7-link>
       </f7-card-footer>
     </f7-card>
   </f7-col>
@@ -29,7 +29,7 @@
 
 <script>
 
-import { ajaxURL, radioOfflineTimeout } from '../config.js';
+import { ajaxURL, mqttOfflineTimeout } from '../config.js';
 
 export default {
   data() {
@@ -48,19 +48,19 @@ export default {
       }
     },
   },
-  props: ['radio'],
+  props: ['mqtt'],
   mounted() {
-    if (this.radio.params) {
-      this.params = this.radio.params.params;
-      this.last_update = new Date(this.radio.params.last_update);
+    if (this.mqtt.params) {
+      this.params = this.mqtt.params.params;
+      this.last_update = new Date(this.mqtt.params.last_update);
     }
     
     // Start an online checker
     this.interval = setInterval(() => this.checkOnline(), 1000);
   },
   sockets: {
-    updateRadio(data) {
-      if (data.radio_id == this.radio.id) {
+    updateMqtt(data) {
+      if (data.mqtt_id == this.mqtt.id) {
         this.params = data.params;
         this.last_update = new Date();
       }
@@ -69,7 +69,7 @@ export default {
   methods: {
     remove: function(id) {
       this.$f7.dialog.confirm('Delete?', '', () => {
-        this.axios.delete(`${ajaxURL}/api/v1/radios/${id}`)
+        this.axios.delete(`${ajaxURL}/api/v1/mqtts/${id}`)
         .then((response) => {
           
         })
@@ -83,7 +83,7 @@ export default {
 
       let now = new Date();
       let diff = (now - this.last_update) / 1000;
-      this.online = Math.floor(diff) < radioOfflineTimeout
+      this.online = Math.floor(diff) < mqttOfflineTimeout
     }
   }
 }

@@ -8,10 +8,8 @@ import RcRemovePage from './pages/rcs/remove.vue';
 import NodeEditPage from './pages/nodes/edit.vue';
 
 import RadioAddPage from './pages/radios/add.vue';
-import RadioRemovePage from './pages/radios/remove.vue';
 
 import MqttAddPage from './pages/mqtts/add.vue';
-import MqttRemovePage from './pages/mqtts/remove.vue';
 
 import ArduinoAddPage from './pages/arduinos/add.vue';
 
@@ -96,10 +94,6 @@ export default [
     component: RadioAddPage,
   },
   {
-    path: '/radio/remove/',
-    component: RadioRemovePage,
-  },
-  {
     path: '/radio/:radio_id/edit/',
     component: RadioAddPage,
   },
@@ -108,10 +102,6 @@ export default [
   {
     path: '/mqtt/add/',
     component: MqttAddPage,
-  },
-  {
-    path: '/mqtt/remove/',
-    component: MqttRemovePage,
   },
   {
     path: '/mqtt/:mqtt_id/edit/',
